@@ -41,17 +41,41 @@ func readLines(fileName string) ([]int, []int) {
 }
 
 func part1(fileName string) int {
-	firstNumbers, secondNumbers := readLines(fileName)
+	firstLocationIds, secondLocationIds := readLines(fileName)
 
-	sort.Ints(firstNumbers)
-	sort.Ints(secondNumbers)
+	sort.Ints(firstLocationIds)
+	sort.Ints(secondLocationIds)
 
 	sum := 0
 
-	for idx, firstNumber := range firstNumbers {
-		secondNumber := secondNumbers[idx]
+	for idx, firstNumber := range firstLocationIds {
+		secondNumber := secondLocationIds[idx]
 
 		sum += int(math.Abs(float64(secondNumber - firstNumber)))
+	}
+
+	return sum
+}
+
+func countOccurrences(occurrences []int) map[int]int {
+	count := make(map[int]int)
+
+	for _, occurrence := range occurrences {
+		count[occurrence] += 1
+	}
+
+	return count
+}
+
+func part2(fileName string) int {
+	locationIds, occurrences := readLines(fileName)
+
+	occurrenceMap := countOccurrences(occurrences)
+
+	sum:= 0
+
+	for _, locationId := range locationIds {
+		sum += locationId * occurrenceMap[locationId]	
 	}
 
 	return sum
@@ -67,4 +91,6 @@ func main() {
 	// Part 1
 
 	fmt.Println("Part 2")
+	result2 := part2(fileName)
+	fmt.Println("Result:", result2)
 }
