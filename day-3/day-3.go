@@ -16,6 +16,7 @@ func readLines(fileName string) string {
 }
 
 var mulRegex = regexp.MustCompile(`mul\((?P<firstNum>\d{1,3}),(?P<secondNum>\d{1,3})\)`)
+var mulRegexPart2 = regexp.MustCompile(`mul\((?<firstNum>\d{1,3}),(?P<secondNum>\d{1,3})\)|do\(\)|don\'t\(\)`)
 
 func part1(fileName string) int {
 	instructions := readLines(fileName)
@@ -41,7 +42,31 @@ func part1(fileName string) int {
 }
 
 func part2(fileName string) int {
-	return 0
+	instructions := readLines(fileName)
+
+	allInstructions := mulRegexPart2.FindAllStringSubmatch(instructions, -1)
+
+	firstNumIdx := mulRegexPart2.SubexpIndex("firstNum")
+	secondNumIdx := mulRegexPart2.SubexpIndex("secondNum")
+
+	enabled := true
+	sum := 0
+
+	for _, group := range allInstructions {
+		if (group[0] == "do()") {
+			enabled = true
+		} else if (group[0] == "don't()") {
+			enabled = false
+		} else if (enabled) {
+			firstNum, err := strconv.Atoi(group[firstNumIdx])
+			common.CheckError(err)
+			secondNum, err := strconv.Atoi(group[secondNumIdx])
+			common.CheckError(err)
+
+			sum += firstNum * secondNum
+		}
+	}
+	return sum
 }
 
 func main() {
